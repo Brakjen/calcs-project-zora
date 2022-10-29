@@ -1,0 +1,41 @@
+#! /bin/bash
+
+#-------------------------------------------
+# File generated 2021-05-08 22:05:57.531240
+#-------------------------------------------
+
+#SBATCH --account=nn9330k
+#SBATCH --job-name=CrCO6
+#SBATCH --output=CrCO6.log
+#SBATCH --error=CrCO6.err
+#SBATCH --nodes=10
+#SBATCH --ntasks-per-node=8
+#SBATCH --cpus-per-task=16
+#SBATCH --time=24:00:00
+#SBATCH --mail-type=NONE
+#SBATCH --partition=normal
+
+source /cluster/home/ambr/mrchem/tools/betzy.env
+export OMP_NUM_THREADS=16
+
+set -o errexit
+set -o nounset
+
+cp CrCO6.inp $SCRATCH
+cp -r /cluster/projects/nn9330k/ambr/orbitals/181750 $SCRATCH/initial_guess
+
+cd $SCRATCH
+/cluster/home/ambr/mrchem/install-new-zora/bin/mrchem --launcher='mpirun -map-by ppr:1:numa -bind-to numa' CrCO6
+
+savefile CrCO6.out
+savefile CrCO6.json
+
+mkdir -p /cluster/projects/${SLURM_JOB_ACCOUNT}/ambr/orbitals/${SLURM_JOBID}
+cp orbitals/* /cluster/projects/${SLURM_JOB_ACCOUNT}/ambr/orbitals/${SLURM_JOBID}/
+echo /cluster/projects/${SLURM_JOB_ACCOUNT}/ambr/orbitals/${SLURM_JOBID} > ${SLURM_SUBMIT_DIR}/CrCO6.orbitals
+
+mkdir -p /cluster/projects/${SLURM_JOB_ACCOUNT}/ambr/checkpoints/${SLURM_JOBID}
+cp checkpoint/* /cluster/projects/${SLURM_JOB_ACCOUNT}/ambr/checkpoints/${SLURM_JOBID}/
+echo /cluster/projects/${SLURM_JOB_ACCOUNT}/ambr/checkpoints/${SLURM_JOBID} > ${SLURM_SUBMIT_DIR}/CrCO6.checkpoint
+
+exit 0

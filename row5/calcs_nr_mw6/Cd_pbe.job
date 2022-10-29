@@ -1,0 +1,38 @@
+#!/bin/bash
+
+#SBATCH --account=nn4654k
+#SBATCH --mail-type=None
+#SBATCH --job-name=Cd_pbe
+#SBATCH --output=Cd_pbe.log
+#SBATCH --error=Cd_pbe.err
+#SBATCH --time=00-36:00:00
+#SBATCH --partition=bigmem
+#SBATCH --mem-per-cpu=15GB
+#SBATCH --ntasks=40
+#SBATCH --cpus-per-task=4
+
+module purge
+module load intel/2019b
+module load OpenMPI/3.1.4-GCC-8.3.0
+module load Python/3.7.4-GCCcore-8.3.0
+
+cp Cd_pbe.inp $SCRATCH
+cd $SCRATCH
+cp -r /cluster/projects/nn4654k/ambr/MWOrbitals/4405473 initial_guess
+export OMP_NUM_THREADS=4
+/cluster/home/ambr/software/mrchem/install_cubeparser/bin/mrchem --launcher 'srun -n 40' --json Cd_pbe
+
+savefile Cd_pbe.out
+savefile Cd_pbe.json
+
+DIR=/cluster/projects/nn4654k/$(whoami)/MWOrbitals/${SLURM_JOBID}
+mkdir -p $DIR
+cp orbitals/* $DIR/
+echo $DIR > ${SLURM_SUBMIT_DIR}/Cd_pbe.orbitals
+
+DIR=/cluster/projects/nn4654k/$(whoami)/MWCheckpoints/${SLURM_JOBID}
+mkdir -p $DIR
+cp checkpoint/* $DIR/
+echo $DIR > ${SLURM_SUBMIT_DIR}/Cd_pbe.checkpoint
+
+exit 0

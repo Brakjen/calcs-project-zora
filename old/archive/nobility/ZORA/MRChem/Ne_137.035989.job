@@ -1,0 +1,41 @@
+#! /bin/bash
+
+#-------------------------------------------
+# File generated 2021-05-07 11:47:22.130960
+#-------------------------------------------
+
+#SBATCH --account=nn9330k
+#SBATCH --job-name=Ne_137.035989
+#SBATCH --output=Ne_137.035989.log
+#SBATCH --error=Ne_137.035989.err
+#SBATCH --nodes=4
+#SBATCH --ntasks-per-node=8
+#SBATCH --cpus-per-task=16
+#SBATCH --time=60:00
+#SBATCH --mail-type=NONE
+#SBATCH --partition=normal
+
+source /cluster/home/ambr/mrchem/tools/betzy.env
+export OMP_NUM_THREADS=16
+
+set -o errexit
+set -o nounset
+
+cp Ne_137.035989.inp $SCRATCH
+cp -r /cluster/projects/nn9330k/ambr/orbitals/181555 $SCRATCH/initial_guess
+
+cd $SCRATCH
+/cluster/home/ambr/mrchem/install-new-zora/bin/mrchem --launcher='mpirun -map-by ppr:1:numa -bind-to numa' Ne_137.035989
+
+savefile Ne_137.035989.out
+savefile Ne_137.035989.json
+
+mkdir -p /cluster/projects/${SLURM_JOB_ACCOUNT}/ambr/orbitals/${SLURM_JOBID}
+cp orbitals/* /cluster/projects/${SLURM_JOB_ACCOUNT}/ambr/orbitals/${SLURM_JOBID}/
+echo /cluster/projects/${SLURM_JOB_ACCOUNT}/ambr/orbitals/${SLURM_JOBID} > ${SLURM_SUBMIT_DIR}/Ne_137.035989.orbitals
+
+mkdir -p /cluster/projects/${SLURM_JOB_ACCOUNT}/ambr/checkpoints/${SLURM_JOBID}
+cp checkpoint/* /cluster/projects/${SLURM_JOB_ACCOUNT}/ambr/checkpoints/${SLURM_JOBID}/
+echo /cluster/projects/${SLURM_JOB_ACCOUNT}/ambr/checkpoints/${SLURM_JOBID} > ${SLURM_SUBMIT_DIR}/Ne_137.035989.checkpoint
+
+exit 0
