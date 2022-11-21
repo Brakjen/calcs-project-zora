@@ -4,8 +4,6 @@ MW_NREL='/cluster/home/ambr/projects/zora/small_molecules/calcs_nrel'
 GTO_NREL_UGBS='/home/ambr/projects/zora/small_molecules_gto/calcs_nrel_ugbs'
 GTO_NREL_SARC='/home/ambr/projects/zora/small_molecules_gto/calcs_nrel_sarczorabasis'
 
-P='DetErFintPaoSvaneheio1337!'
-
 echo MW ZORA
 scp betzy:${MW}/* calcs_mw
 

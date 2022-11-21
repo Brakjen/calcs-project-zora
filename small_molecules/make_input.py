@@ -15,7 +15,6 @@ xyz_dir = Path.cwd().joinpath('xyz_files')
 prec = 1e-5
 
 for xyz in xyz_dir.glob('*.xyz'):
-    if 'I2' not in str(xyz): continue
     # GENERATE INPUT FILES
     mol = Molecule.from_xyzfile(xyz)
     i = EnergyZORACalculation(molecule=mol, include_xc=False, include_coulomb=False)
