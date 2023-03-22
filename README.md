@@ -22,5 +22,5 @@ This folder contains some tests from the early stages of the implementation. Not
 # Scripts
 List of the most important scripts I have used
 - Input file generation: https://github.com/MRChemSoft/mrchem-gui
-- SLURM file generation: https://github.com/Andersmb/PySlurm
-- SLURM Queue GUI: https://github.com/Andersmb/QView
+- SLURM file generation: https://github.com/Brakjen/PySlurm
+- SLURM Queue GUI: https://github.com/Brakjen/QView
